@@ -43,15 +43,15 @@ module MotionDataWrapper
         after_fetch if respond_to? :after_fetch
       end
   
-      def destroy
+      def destroy(options = nil)
       
         if context = managedObjectContext
-          before_destroy_callback
+          before_destroy_callback(options)
           context.deleteObject(self)
           error = Pointer.new(:object)
           if context.save(error)
             @destroyed = true
-            after_destroy_callback
+            after_destroy_callback(options)
             freeze
           end
         end
@@ -118,12 +118,12 @@ module MotionDataWrapper
         after_save if respond_to? :after_save
       end
 
-      def before_destroy_callback
-        before_destroy if respond_to? :before_destroy
+      def before_destroy_callback(options = nil)
+        options ? before_destroy(options) : before_destroy if respond_to? :before_destroy
       end
   
-      def after_destroy_callback
-        after_destroy if respond_to? :after_destroy
+      def after_destroy_callback(options = nil)
+        options ? after_destroy(options) : after_destroy if respond_to? :after_destroy
       end
   
     end
